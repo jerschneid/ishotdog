@@ -1,0 +1,3 @@
+- Loading spinner
+- Hide drop area while loading
+- Reset drop area after result
