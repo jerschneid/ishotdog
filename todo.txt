@@ -1,3 +1,5 @@
-- Loading spinner
-- Hide drop area while loading
-- Reset drop area after result
+- Saving access token between API calls (Save to temp file?)
+- Powered by Nyckel link
+- Scroll down to see video on how to make?
+- Why is it soooo slooowww? Javascript log time? Downsize images?
+- favicon
