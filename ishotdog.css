@@ -5,7 +5,8 @@ body {
 }
 
 #title {
-    color: #333;
+    color: black;
+    text-shadow: #ccc 2px 2px;
 }
 
 .upload-area {
@@ -126,6 +127,25 @@ body {
     top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#nyckel {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    padding: 5px 10px;
+    background-color: white;
+    opacity: 0.8;
+    text-decoration: none;
+    color: rgb(87, 87, 255);
+    border-radius: 5px;
+    border: solid 1px rgb(142, 142, 252);
+}
+
+#nyckel:hover {
+    text-decoration: underline;
+    /* color: white;
+    background-color: rgb(163, 203, 255); */
 }
 
 @media only screen and (max-width: 600px) {

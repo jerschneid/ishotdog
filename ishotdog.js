@@ -103,6 +103,8 @@ function uploadData(imageBlob)
         error: function(response)
         {
             console.error("FINISH uploadData", Date.now(), response);
+            $("#title").show();
+            resetPage();
             alert("Error uploading file!");
         }
     });
@@ -162,6 +164,11 @@ function resizeAndUploadImage(file)
         }
         reader.readAsDataURL(file);
     }
+    else
+    {
+        alert("You must choose an image");
+        resetPage();
+    }
 }
 
 /* Utility function to convert a canvas to a BLOB */
@@ -195,9 +202,7 @@ var dataURLToBlob = function (dataURL)
 
 function displayResult(response)
 {
-    $("#thinking").hide();
-    $(".upload-area").show();
-    $("h2").text("Drag and drop JPG here or click to select file");
+    resetPage();
 
     if(response.name.toLowerCase().includes("not"))
     {
@@ -208,6 +213,14 @@ function displayResult(response)
         $("#hotdog").show();
     }
     console.log(response);
+}
+
+function resetPage()
+{
+    $(".banner").hide();
+    $("#thinking").hide();
+    $(".upload-area").show();
+    $("h2").text("Drag and drop JPG here or click to select file");
 }
 
 // Added thumbnail

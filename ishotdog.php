@@ -24,21 +24,41 @@
         }
     }    
 
+    function GetAccessTokenFileName()
+    {
+        return "access-token.txt";
+    } 
+    
+    function SaveAccessToken($token)
+    {  
+        file_put_contents(GetAccessTokenFileName(), json_encode($token));
+    }
+
+    function GetSavedAccessToken()
+    {
+        $token = null;
+
+        try
+        {
+            $token = json_decode(file_get_contents(GetAccessTokenFileName()));
+        }
+        catch (Exception $e) 
+        {}
+
+        return $token;
+    }
+
     function GetAccessToken()
     {
-        error_log("GetAccessToken");
-        // error_log($_SESSION['access_token']);
-        error_log("Now: " . date('Y-m-d H:i:s'));
-        error_log("Token date: " . $_SESSION['access_token_date']);
+        //error_log("GetAccessToken");
 
-
+        $savedToken = GetSavedAccessToken();
         $oktime = strtotime(date('Y-m-d H:i:s')) - 30;
-        error_log("OK Time: " . $oktime);
 
-        if($_SESSION['access_token'] != null && strtotime($_SESSION['access_token_date']) > $oktime)
+        if($savedToken != null && strtotime($savedToken->{'date'}) > $oktime)
         {
-            error_log("USING SAVED TOKEN: " . $_SESSION['access_token']);
-            return $_SESSION['access_token'];
+            //error_log("USING SAVED TOKEN: " . $savedToken->{'token'});
+            return $savedToken->{'token'};
         } 
 
         $url = 'https://www.nyckel.com/connect/token';
@@ -66,12 +86,13 @@
         //error_log('Response: ' . $response);        
         //error_log($json);
 
-        $_SESSION['access_token'] = $json->{'access_token'};
-        $_SESSION['access_token_date'] = date('Y-m-d H:i:s');
 
-        error_log("GOT NEW TOKEN: " . $_SESSION['access_token']);
+        $token = array('token' => $json->{'access_token'}, 'date' => date('Y-m-d H:i:s'));
+        SaveAccessToken($token);
 
-        return $_SESSION['access_token'];
+        //error_log("GOT NEW TOKEN: " . $token["token"]);
+
+        return $token["token"];
     }
 
     if(session_id() == ''){ session_start();}
@@ -114,9 +135,9 @@
     }    
     
     $info = curl_getinfo($ch);
-    error_log($info['request_header']);
-    error_log($response);
-    error_log('Response: ' . $response);
+    // error_log($info['request_header']);
+    // error_log($response);
+    // error_log('Response: ' . $response);
 
 //    curl_close( $ch );
 ?>
