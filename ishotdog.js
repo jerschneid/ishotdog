@@ -39,12 +39,12 @@ $(function ()
         $("h2").text("Upload");
 
         var file = e.originalEvent.dataTransfer.files;
-        var fd = new FormData();
-
-        fd.append('file', file[0]);
 
         populateImage(file[0]);
-        uploadData(fd);
+
+        console.log("StartResize", file[0]);
+        resizeAndUploadImage(file[0]);
+        console.log("Finished Resize");
     });
 
     // Open file selector on div click
@@ -57,15 +57,9 @@ $(function ()
     // file selected
     $("#file").change(function ()
     {
-        var fd = new FormData();
-
-        var files = $('#file')[0].files[0];
-
-        fd.append('file', files);
-
-        populateImage(files);
-        uploadData(fd);
-
+        var file = $('#file')[0].files[0];
+        populateImage(file);
+        resizeAndUploadImage(file);
     });
 });
 
@@ -87,33 +81,117 @@ function populateImage(file)
 }
 
 // Sending AJAX request to Nyckel
-function uploadData(formdata)
+function uploadData(imageBlob)
 {
-    console.log("uploadData", formdata);
+    var formdata = new FormData();
+    formdata.append('file', imageBlob);
+
+    console.log("START uploadData", Date.now(), formdata);
 
     $.ajax({
-        url: 'https://www.nyckel.com/v0.9/functions/km6svjpscep917bc/invoke',
+        url: '/ishotdog.php',
         type: 'post',
         data: formdata,
         contentType: false,
         processData: false,
         dataType: 'json',
-        beforeSend: function (xhr)
-        {
-            xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjczNEE2RDZGQzMzMTcyRjE5RTMyOTFDQURCNzM2RTY5IiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2MTYwNDYwOTAsImV4cCI6MTYxNjA0OTY5MCwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6ImNhNHBsOXZkZ2d5enRueWdta3ZkdG95OXV6bzBlZ3V1IiwianRpIjoiMTI0RjM1OTI4MTM1MEU3NkZCRTFGNDFCODdDMEMxRTIiLCJpYXQiOjE2MTYwNDYwOTAsInNjb3BlIjpbImFwaSJdfQ.Y5ZoNbOUUGsXAThxGaZcDb4Wh_EDm5QqA5XMcG9cDCoeBfsPkZJKT4BOqPlAOciHXGtmw0xJ4hXDucxzXL6Geoq6pAP7JFiK5ZZu2r69aC2Fce46djNT22wfDAMuztjgaIktF7mJYwOi98mg_63H6dludSdINLCUnWlIYwWD8t_Y_yIvUBlNFrKUQ7Sd4nHUyovBtHG0ZsNlfgMgZaoXIkuzf_Zw1OXqM8yOqMQ1lL6BwoE2VjMb57FTDyjVys2D2xmPRByMw4vrmCmJ9-TFdITShFAwcj_okPCb23HXCeLsppRbCmE5Pr2El6gs3X2q2_5FeET2AejyHc7Bx8bHmA');
-        },
         success: function (response)
         {
-            console.log(response);
+            console.log("FINISH uploadData", Date.now(), response);
             displayResult(response);
         },
         error: function(response)
         {
-            console.error(response);
+            console.error("FINISH uploadData", Date.now(), response);
             alert("Error uploading file!");
         }
     });
+
+
 }
+
+function resizeAndUploadImage(file)
+{
+    // from an input element
+    // var filesToUpload = input.files;
+    // var file = filesToUpload[0];
+    console.log("resizeImage", file);
+
+    // Ensure it's an image
+    if (file.type.match(/image.*/))
+    {
+        console.log('An image has been loaded');
+
+        // Load the image
+        var reader = new FileReader();
+        reader.onload = function (readerEvent)
+        {
+            var image = new Image();
+            image.onload = function (imageEvent)
+            {
+
+                // Resize the image
+                var canvas = document.createElement('canvas'),
+                    max_size = 600,
+                    width = image.width,
+                    height = image.height;
+                if (width > height)
+                {
+                    if (width > max_size)
+                    {
+                        height *= max_size / width;
+                        width = max_size;
+                    }
+                } else
+                {
+                    if (height > max_size)
+                    {
+                        width *= max_size / height;
+                        height = max_size;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                var dataUrl = canvas.toDataURL('image/jpeg');
+                var resizedImage = dataURLToBlob(dataUrl);
+
+                uploadData(resizedImage);
+            }
+            image.src = readerEvent.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+/* Utility function to convert a canvas to a BLOB */
+var dataURLToBlob = function (dataURL)
+{
+    var BASE64_MARKER = ';base64,';
+    if (dataURL.indexOf(BASE64_MARKER) == -1)
+    {
+        var parts = dataURL.split(',');
+        var contentType = parts[0].split(':')[1];
+        var raw = parts[1];
+
+        return new Blob([raw], { type: contentType });
+    }
+
+    var parts = dataURL.split(BASE64_MARKER);
+    var contentType = parts[0].split(':')[1];
+    var raw = window.atob(parts[1]);
+    var rawLength = raw.length;
+
+    var uInt8Array = new Uint8Array(rawLength);
+
+    for (var i = 0; i < rawLength; ++i)
+    {
+        uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: contentType });
+}
+/* End Utility function to convert a canvas to a BLOB      */
 
 function displayResult(response)
 {
