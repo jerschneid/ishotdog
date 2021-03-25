@@ -156,6 +156,10 @@ body {
     h2 {
         font-size: 4vh;
     }
+    .banner h3 {
+        font-size: 8vh;
+        line-height: 18vh;
+    }
 }
 
 /* Loader */
