@@ -1,5 +1,10 @@
 - Saving access token between API calls (Save to temp file?)
 - Powered by Nyckel link
 - Scroll down to see video on how to make?
-- Why is it soooo slooowww? Javascript log time? Downsize images?
-- favicon
+
+
+curl -X POST \
+  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2NTY5MDIzMjM2Qjg0Qzg1NTQ0NDMzNzE0ODkwNTdEIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2MTY2NTU2NjgsImV4cCI6MTYxNjY1OTI2OCwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6ImNhNHBsOXZkZ2d5enRueWdta3ZkdG95OXV6bzBlZ3V1IiwianRpIjoiQTU4QkE5NjFCRjRBNDEzQzI3Qzc1NDU4REM0RDQzQUMiLCJpYXQiOjE2MTY2NTU2NjgsInNjb3BlIjpbImFwaSJdfQ.kj97_NgjonjFLZWfYYcJt3pjhskIZBnUY3TzcgR6TUw3VruiMKNS_gfDuf_6EyPTcrngnaOegiNjlMfEk_b6hD7lErfJQ0SViADHmdQMNlldM9X4gfjxhLAYhDHmSv4VCyPPtovPBoFahrXjQa8xMVljnTjIBTLkpC36S1w9zFSD0AhJsIvnPAL69jnu4QQ4J_P4T6ZrUtdDxjXkcpVPigUsa0bLHtoQwqxQVY3OxLMMuUFPua8fTDfZkXTmoLa4ystr2CZjthNb8QoGvC-cPwldMxDaba9vM8_KrRF7S56qgKPyk8rSk5G2-RwvF0ROggqLfaKg6YZpw2lZeOLVFw' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'data=@pizza2.jpg' \
+  https://www.nyckel.com/v0.9/functions/km6svjpscep917bc/invoke
