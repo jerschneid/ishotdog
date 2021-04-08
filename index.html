@@ -12,7 +12,39 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="ishotdog.css">
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="/ishotdog.js"></script>
+    <script src="ishotdog.js"></script>
+    <script>
+
+    // Sending AJAX request to Nyckel to run against ML model
+    function CheckImageForHotDog(image)
+    {
+        var formdata = new FormData();
+        formdata.append('file', image);
+
+        $.ajax({
+            url: 'https://www.nyckel.com/v0.9/functions/km6svjpscep917bc/invoke',
+            type: 'post',
+            data: formdata,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response)
+            {
+                displayResult(response);
+                
+                //Show the JSON response in the console
+                console.log(response);
+            },
+            error: function (response)
+            {
+                console.error("Error checking image for hotdog", response);
+                $("#title").show();
+                resetPage();
+            }
+        });
+    }
+    </script>
+
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7KRMPEZ1KJ"></script>
@@ -29,6 +61,17 @@
 
     <div id="main" class="container">
 
+        <h1 id="title">Is your photo of a hot dog?</h1>
+        
+        <!-- Drag and Drop container-->
+        <div class="upload-area" id="uploadfile">
+            <h2>Drag and drop JPG here or click to select file</h2>
+        </div>
+        <input type="file" name="file" id="file">
+        
+        <a id="nyckel" href="https://www.nyckel.com">Machine learning powered by Nyckel</a>
+
+        <!-- Hotdog label -->
         <div id="hotdog" class="banner">
             <div id="checkmark" class="banner-circle">
                 ✓
@@ -36,6 +79,7 @@
             <h3>Hotdog</h3>
         </div>
 
+        <!-- Not hotdog label -->
         <div id="nothotdog" class="banner">
             <div id="xmark" class="banner-circle">
                 ×
@@ -43,6 +87,7 @@
             <h3>Not hotdog</h3>
         </div>
 
+        <!-- Evaluating/spinner section -->
         <div id="thinking">
             <div class="spinner">
                 <div class="ldio-or7qys6mh4">
@@ -64,15 +109,6 @@
         </div>
 
         
-        <h1 id="title">Is your photo of a hot dog?</h1>
-
-        <!-- Drag and Drop container-->
-        <div class="upload-area" id="uploadfile">
-            <h2>Drag and drop JPG here or click to select file</h2>
-        </div>
-        <input type="file" name="file" id="file">
-
-        <a id="nyckel" href="https://www.nyckel.com">Machine learning powered by Nyckel</a>
 
     </div>
 

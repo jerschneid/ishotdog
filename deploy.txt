@@ -1,0 +1,5 @@
+To run locally just open index.html 
+
+To deploy to production:
+
+git push heroku master

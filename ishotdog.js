@@ -1,7 +1,5 @@
 $(function ()
 {
-    console.log("hi");
-
     // preventing page from redirecting
     $("html").on("dragover", function (e)
     {
@@ -31,8 +29,6 @@ $(function ()
     // Drop
     $('.upload-area').on('drop', function (e)
     {
-        console.log("Dropped!");
-
         e.stopPropagation();
         e.preventDefault();
 
@@ -42,15 +38,12 @@ $(function ()
 
         populateImage(file[0]);
 
-        console.log("StartResize", file[0]);
         resizeAndUploadImage(file[0]);
-        console.log("Finished Resize");
     });
 
     // Open file selector on div click
     $("#uploadfile").click(function ()
     {
-        console.log("Upload clicked!");
         $("#file").click();
     });
 
@@ -80,50 +73,12 @@ function populateImage(file)
 
 }
 
-// Sending AJAX request to Nyckel
-function uploadData(imageBlob)
-{
-    var formdata = new FormData();
-    formdata.append('file', imageBlob);
-
-    console.log("START uploadData", Date.now(), formdata);
-
-    $.ajax({
-        url: '/ishotdog.php',
-        type: 'post',
-        data: formdata,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
-        success: function (response)
-        {
-            console.log("FINISH uploadData", Date.now(), response);
-            displayResult(response);
-        },
-        error: function(response)
-        {
-            console.error("FINISH uploadData", Date.now(), response);
-            $("#title").show();
-            resetPage();
-            alert("Error uploading file!");
-        }
-    });
-
-
-}
 
 function resizeAndUploadImage(file)
 {
-    // from an input element
-    // var filesToUpload = input.files;
-    // var file = filesToUpload[0];
-    console.log("resizeImage", file);
-
     // Ensure it's an image
     if (file.type.match(/image.*/))
     {
-        console.log('An image has been loaded');
-
         // Load the image
         var reader = new FileReader();
         reader.onload = function (readerEvent)
@@ -158,7 +113,7 @@ function resizeAndUploadImage(file)
                 var dataUrl = canvas.toDataURL('image/jpeg');
                 var resizedImage = dataURLToBlob(dataUrl);
 
-                uploadData(resizedImage);
+                CheckImageForHotDog(resizedImage);
             }
             image.src = readerEvent.target.result;
         }
@@ -212,7 +167,6 @@ function displayResult(response)
     {
         $("#hotdog").show();
     }
-    console.log(response);
 }
 
 function resetPage()
